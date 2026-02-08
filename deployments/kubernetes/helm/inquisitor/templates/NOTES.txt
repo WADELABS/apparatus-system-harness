@@ -1,0 +1,60 @@
+🎉 Inquisitor Framework has been deployed!
+
+🔗 Access the API:
+{{- if .Values.ingress.enabled }}
+  {{- range .Values.ingress.hosts }}
+  URL: https://{{ .host }}
+  {{- end }}
+{{- else if .Values.api.enabled }}
+  API Service: {{ include "inquisitor.fullname" . }}-api.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.api.service.port }}
+{{- end }}
+
+🔬 Access the Conductor:
+  Service: {{ include "inquisitor.fullname" . }}-conductor.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.conductor.service.port }}
+
+📊 View Metrics:
+  Prometheus: {{ include "inquisitor.fullname" . }}-conductor.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.conductor.service.metricsPort }}/metrics
+
+📁 Artifact Storage:
+{{- if eq .Values.artifactRegistry.storageBackend "filesystem" }}
+  Path: {{ .Values.artifactRegistry.filesystem.path }}
+{{- else if eq .Values.artifactRegistry.storageBackend "s3" }}
+  S3 Bucket: {{ .Values.artifactRegistry.s3.bucket }}
+  Region: {{ .Values.artifactRegistry.s3.region }}
+{{- end }}
+
+📦 Database:
+{{- if .Values.artifactRegistry.database.enabled }}
+  Host: {{ .Values.artifactRegistry.database.host }}
+  Database: {{ .Values.artifactRegistry.database.database }}
+{{- else }}
+  Using SQLite (for testing only)
+{{- end }}
+
+🔐 Secrets:
+{{- if .Values.secrets.postgres.password }}
+  Database password: {{ .Values.secrets.postgres.password }}
+{{- end }}
+{{- if .Values.secrets.redis.password }}
+  Redis password: {{ .Values.secrets.redis.password }}
+{{- end }}
+
+⚡ Quick Start:
+1. Port forward to the API:
+   kubectl port-forward svc/{{ include "inquisitor.fullname" . }}-api {{ .Values.api.service.port }}:{{ .Values.api.service.port }}
+
+2. Run a quickstart assay:
+   curl -X POST http://localhost:{{ .Values.api.service.port }}/api/v1/assays/quickstart
+
+3. Check the logs:
+   kubectl logs -l component=conductor --tail=50
+
+📚 Documentation: https://docs.inquisitor.dev
+🐛 Issues: https://github.com/inquisitor/inquisitor/issues
+
+{{- if .Values.ingress.enabled }}
+⚠️  WARNING: The Ingress is configured with TLS but you need to:
+   - Update the hostnames in values.yaml
+   - Configure your DNS to point to the Ingress controller
+   - Set up certificate management (cert-manager recommended)
+{{- end }}

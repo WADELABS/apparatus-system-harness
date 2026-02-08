@@ -1,0 +1,417 @@
+# THE APPARATUS: HERMENEUTIC ORCHESTRATION
+# Coordinates seven strata across multiple containers
+# Maintains quantum coherence between interpretive layers
+
+version: '3.8'
+
+x-hermeneutic-defaults: &hermeneutic-defaults
+  restart: unless-stopped
+  networks:
+    - hermeneutic-net
+  volumes:
+    - ./findings:/apparatus/findings
+    - ./quantum_states:/apparatus/quantum_states
+    - ./interpretive_history:/apparatus/interpretive_history
+  environment:
+    - HERMENEUTIC_ENVIRONMENT=production
+    - QUANTUM_COHERENCE_THRESHOLD=0.7
+    - INTERPRETIVE_PATIENCE=0.8
+    - REFLEXIVITY_DEPTH=3
+
+x-stratum-defaults: &stratum-defaults
+  build:
+    context: .
+    target: transcendental # Build through all strata
+  <<: *hermeneutic-defaults
+
+services:
+  # === PHENOMENAL STRATUM: OBSERVATION CONTAINER ===
+  phenomenal:
+    <<: *stratum-defaults
+    container_name: apparatus-phenomenal
+    command: [ "--stratum", "phenomenal", "--mode", "phenomenological" ]
+    environment:
+      - STRATUM=phenomenal
+      - OBSERVATION_MODE=bracketed
+      - PHENOMENOLOGICAL_REDUCTION=true
+    ports:
+      - "8001:8000" # Phenomenological observation API
+    depends_on:
+      - quantum-coherence
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apparatus.strata.phenomenal.health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # === NOUMENAL STRATUM: EXCAVATION CONTAINER ===
+  noumenal:
+    <<: *stratum-defaults
+    container_name: apparatus-noumenal
+    command: [ "--stratum", "noumenal", "--mode", "excavation" ]
+    environment:
+      - STRATUM=noumenal
+      - EXCAVATION_DEPTH=deep
+      - CAUSAL_MAPPING=true
+    ports:
+      - "8002:8000" # Noumenal excavation API
+    depends_on:
+      - quantum-coherence
+      - phenomenal
+    volumes:
+      - ./weight_spaces:/apparatus/weight_spaces
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apparatus.strata.noumenal.health" ]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 50s
+
+  # === INTENTIONAL STRATUM: TELEOLOGY CONTAINER ===
+  intentional:
+    <<: *stratum-defaults
+    container_name: apparatus-intentional
+    command: [ "--stratum", "intentional", "--mode", "teleological" ]
+    environment:
+      - STRATUM=intentional
+      - TELEOLOGY_DETECTION=strong
+      - GOAL_RECONSTRUCTION=true
+    ports:
+      - "8003:8000" # Intentional analysis API
+    depends_on:
+      - quantum-coherence
+      - noumenal
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apparatus.strata.intentional.health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # === HERMENEUTIC STRATUM: SELF-INTERPRETATION CONTAINER ===
+  hermeneutic:
+    <<: *stratum-defaults
+    container_name: apparatus-hermeneutic
+    command: [ "--stratum", "hermeneutic", "--mode", "self-referential" ]
+    environment:
+      - STRATUM=hermeneutic
+      - SELF_REFERENTIAL_ANALYSIS=true
+      - META_COGNITIVE_MAPPING=true
+    ports:
+      - "8004:8000" # Hermeneutic self-analysis API
+    depends_on:
+      - quantum-coherence
+      - intentional
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apparatus.strata.hermeneutic.health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # === EPISTEMIC STRATUM: KNOWLEDGE CONTAINER ===
+  epistemic:
+    <<: *stratum-defaults
+    container_name: apparatus-epistemic
+    command: [ "--stratum", "epistemic", "--mode", "audit" ]
+    environment:
+      - STRATUM=epistemic
+      - CERTAINTY_MAPPING=true
+      - JUSTIFICATION_ANALYSIS=true
+    ports:
+      - "8005:8000" # Epistemic audit API
+    depends_on:
+      - quantum-coherence
+      - hermeneutic
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apparatus.strata.epistemic.health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # === ONTOLOGICAL STRATUM: REALITY CONTAINER ===
+  ontological:
+    <<: *stratum-defaults
+    container_name: apparatus-ontological
+    command: [ "--stratum", "ontological", "--mode", "categorical" ]
+    environment:
+      - STRATUM=ontological
+      - CATEGORY_ANALYSIS=true
+      - REALITY_PARTITION_MAPPING=true
+    ports:
+      - "8006:8000" # Ontological mapping API
+    depends_on:
+      - quantum-coherence
+      - epistemic
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apparatus.strata.ontological.health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # === TRANSCENDENTAL STRATUM: CONDITIONS CONTAINER ===
+  transcendental:
+    <<: *stratum-defaults
+    container_name: apparatus-transcendental
+    command: [ "--stratum", "transcendental", "--mode", "reflection" ]
+    environment:
+      - STRATUM=transcendental
+      - CONDITION_ANALYSIS=true
+      - LIMIT_MAPPING=true
+    ports:
+      - "8007:8000" # Transcendental reflection API
+    depends_on:
+      - quantum-coherence
+      - ontological
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apparatus.strata.transcendental.health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # === QUANTUM COHERENCE SERVICE ===
+  quantum-coherence:
+    <<: *hermeneutic-defaults
+    image: quantum-hermeneutics:latest
+    container_name: apparatus-quantum-coherence
+    command: [ "--mode", "coherence-manager" ]
+    environment:
+      - SERVICE=quantum-coherence
+      - SUPERPOSITION_ENABLED=true
+      - ENTANGLEMENT_TRACKING=true
+    ports:
+      - "8010:8000" # Quantum coherence API
+    volumes:
+      - ./coherence_data:/apparatus/coherence_data
+    healthcheck:
+      test: [ "CMD", "python", "-m", "quantum_hermeneutics.health" ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # === TEMPORAL HERMENEUTICS SERVICE ===
+  temporal-hermeneutics:
+    <<: *hermeneutic-defaults
+    image: temporal-hermeneutics:latest
+    container_name: apparatus-temporal
+    command: [ "--mode", "temporal-integrator" ]
+    environment:
+      - SERVICE=temporal-hermeneutics
+      - CHRONOS_TRACKING=true
+      - KAIROS_DETECTION=true
+      - AION_MAPPING=true
+    ports:
+      - "8011:8000" # Temporal hermeneutics API
+    volumes:
+      - ./temporal_data:/apparatus/temporal_data
+    depends_on:
+      - quantum-coherence
+    healthcheck:
+      test: [ "CMD", "python", "-m", "temporal_hermeneutics.health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # === APOPHATIC SYNTHESIS SERVICE ===
+  apophatic-synthesis:
+    <<: *hermeneutic-defaults
+    image: apophatic-ai:latest
+    container_name: apparatus-apophatic
+    command: [ "--mode", "synthesis", "--weight", "0.3" ]
+    environment:
+      - SERVICE=apophatic-synthesis
+      - APOPHATIC_WEIGHT=0.3
+      - KATAPHATIC_WEIGHT=0.7
+    ports:
+      - "8012:8000" # Apophatic synthesis API
+    depends_on:
+      - quantum-coherence
+      - temporal-hermeneutics
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apophatic_ai.health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # === ORCHESTRATOR: SEVEN-STRATA COORDINATOR ===
+  orchestrator:
+    <<: *stratum-defaults
+    container_name: apparatus-orchestrator
+    command: [ "--mode", "hermeneutic", "--strata", "all", "--tradition", "gadamerian" ]
+    environment:
+      - SERVICE=orchestrator
+      - HERMENEUTIC_MODE=hermeneutic
+      - STRATA_COUNT=7
+      - INTERPRETIVE_PATIENCE=0.8
+    ports:
+      - "8000:8000" # Main orchestrator API
+    depends_on:
+      quantum-coherence:
+        condition: service_healthy
+      temporal-hermeneutics:
+        condition: service_healthy
+      apophatic-synthesis:
+        condition: service_healthy
+      phenomenal:
+        condition: service_healthy
+      noumenal:
+        condition: service_healthy
+      intentional:
+        condition: service_healthy
+      hermeneutic:
+        condition: service_healthy
+      epistemic:
+        condition: service_healthy
+      ontological:
+        condition: service_healthy
+      transcendental:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "python", "-m", "apparatus.orchestrate.health" ]
+      interval: 60s
+      timeout: 30s
+      retries: 3
+      start_period: 120s
+
+  # === REFLEXIVE MONITOR: OBSERVES THE OBSERVER ===
+  reflexive-monitor:
+    <<: *hermeneutic-defaults
+    image: reflexivity-engine:latest
+    container_name: apparatus-reflexive
+    command: [ "--mode", "meta-observation" ]
+    environment:
+      - SERVICE=reflexive-monitor
+      - REFLEXIVITY_DEPTH=3
+      - META_OBSERVATION=true
+    ports:
+      - "8013:8000" # Reflexive monitoring API
+    depends_on:
+      - orchestrator
+    volumes:
+      - ./reflexive_logs:/apparatus/reflexive_logs
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import sys; sys.exit(0)" ]
+      interval: 45s
+      timeout: 15s
+      retries: 3
+
+  # === ETHICAL WATCHDOG: HERMENEUTIC ETHICS MONITOR ===
+  ethical-watchdog:
+    <<: *hermeneutic-defaults
+    image: hermeneutic-ethics:latest
+    container_name: apparatus-ethical
+    command: [ "--mode", "watchdog" ]
+    environment:
+      - SERVICE=ethical-watchdog
+      - NON_VIOLENCE=true
+      - INTERPRETIVE_JUSTICE=true
+      - EPISTEMIC_HUMILITY=true
+    ports:
+      - "8014:8000" # Ethical monitoring API
+    depends_on:
+      - orchestrator
+      - reflexive-monitor
+    healthcheck:
+      test: [ "CMD", "python", "-m", "hermeneutic_ethics.health" ]
+      interval: 90s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
+
+  # === VISUALIZATION DASHBOARD: HERMENEUTIC VISUALIZATION ===
+  dashboard:
+    <<: *hermeneutic-defaults
+    image: strata-visualizer:latest
+    container_name: apparatus-dashboard
+    command: [ "--mode", "dashboard" ]
+    environment:
+      - SERVICE=dashboard
+      - VISUALIZATION_TYPE=stratified
+      - QUANTUM_VISUALIZATION=true
+    ports:
+      - "8080:8080" # Main dashboard
+    depends_on:
+      - orchestrator
+    volumes:
+      - ./visualizations:/apparatus/visualizations
+
+  # === QUANTUM STATE PERSISTENCE ===
+  quantum-persistence:
+    <<: *hermeneutic-defaults
+    image: quantum-state-persistence:latest
+    container_name: apparatus-persistence
+    command: [ "--mode", "state-manager" ]
+    environment:
+      - SERVICE=quantum-persistence
+      - STATE_PERSISTENCE=true
+      - DECOHERENCE_ARCHIVAL=true
+    volumes:
+      - ./quantum_states:/apparatus/quantum_states
+      - ./decoherence_archive:/apparatus/decoherence_archive
+    depends_on:
+      - quantum-coherence
+    healthcheck:
+      test: [ "CMD", "python", "-m", "quantum_state_persistence.health" ]
+      interval: 120s
+      timeout: 30s
+      retries: 2
+
+# === HERMENEUTIC NETWORK: QUANTUM ENTANGLED NETWORK ===
+networks:
+  hermeneutic-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    labels:
+      - "hermeneutic.network=quantum-entangled"
+      - "interpretive.coherence=maintained"
+
+# === VOLUMES: HERMENEUTIC ARTIFACT STORAGE ===
+volumes:
+  findings:
+    name: apparatus-findings
+    labels:
+      - "hermeneutic.artifact=findings"
+      - "interpretive.history=preserved"
+  quantum_states:
+    name: apparatus-quantum-states
+    labels:
+      - "hermeneutic.artifact=quantum-states"
+      - "superposition.preserved=true"
+  interpretive_history:
+    name: apparatus-interpretive-history
+    labels:
+      - "hermeneutic.artifact=interpretive-history"
+      - "hermeneutic.circles=tracked"
+  coherence_data:
+    name: apparatus-coherence-data
+  temporal_data:
+    name: apparatus-temporal-data
+  reflexive_logs:
+    name: apparatus-reflexive-logs
+  quantum_states_archive:
+    name: apparatus-quantum-archive
+
+# === HERMENEUTIC ORCHESTRATION POLICIES ===
+x-orchestration-policies:
+  start_order: quantum-first
+  health_check_strategy: hermeneutic-patience
+  failure_mode: interpretive-crisis
+  coherence_maintenance: continuous
+  temporal_integration: synchronous
+  ethical_monitoring: always
+
+# === WARNING: HERMENEUTIC COMPLEXITY ===
+# This orchestration creates interpretive entanglement
+# between containers. Quantum coherence must be maintained.
+# Understanding will emerge gradually across strata.

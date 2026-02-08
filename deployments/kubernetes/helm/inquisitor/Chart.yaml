@@ -1,0 +1,52 @@
+apiVersion: v2
+name: inquisitor
+description: A Helm chart for deploying the Inquisitor Framework
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+# Dependencies
+dependencies:
+  - name: postgresql
+    version: "12.1.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: artifactRegistry.database.enabled
+    tags:
+      - database
+    
+  - name: redis
+    version: "17.0.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: cache.enabled
+    tags:
+      - cache
+
+# Maintainers
+maintainers:
+  - name: Inquisitor Team
+    email: team@inquisitor.dev
+    url: https://inquisitor.dev
+
+# Keywords
+keywords:
+  - ai
+  - research
+  - machine-learning
+  - framework
+  - experimentation
+
+# Annotations
+annotations:
+  artifacthub.io/changes: |
+    - Initial release of Inquisitor Framework
+    - Includes conductor, API server, and workers
+    - Supports multiple storage backends
+    - Comprehensive telemetry and monitoring
+  artifacthub.io/images: |
+    - name: inquisitor
+      image: inquisitor/inquisitor:latest
+  artifacthub.io/links: |
+    - name: Documentation
+      url: https://docs.inquisitor.dev
+    - name: GitHub
+      url: https://github.com/inquisitor/inquisitor

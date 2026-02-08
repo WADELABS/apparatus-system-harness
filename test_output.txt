@@ -1,0 +1,7 @@
+C:\Users\sheewi\AppData\Roaming\Python\Python314\site-packages\langsmith\schemas.py:23: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
+  from pydantic.v1 import (
+ERROR: usage: python.exe -m pytest [options] [file_or_dir] [file_or_dir] [...]
+python.exe -m pytest: error: unrecognized arguments: --cov=src/inquisitor --cov-report=term-missing
+  inifile: K:\GITHUB-PORTFOLIO\apparatus-system-harness\pyproject.toml
+  rootdir: K:\GITHUB-PORTFOLIO\apparatus-system-harness
+

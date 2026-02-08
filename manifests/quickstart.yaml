@@ -1,0 +1,54 @@
+manifest:
+  version: "1.0.0"
+  id: "quickstart_assay"
+  name: "Inquisitor Quickstart"
+  
+  metadata:
+    author: "User"
+    description: "A simple hello-world assay to verify the Inquisitor setup."
+    created: "2026-02-08T00:00:00Z"
+    tags: ["quickstart", "verification"]
+  
+  protocol:
+    type: "sequential"
+    phases:
+      - name: "initialization"
+        steps:
+          - name: "ping_instrument"
+            type: "diagnostic"
+            instrument: "basic_probe"
+            parameters:
+              action: "ping"
+      
+      - name: "execution"
+        steps:
+          - name: "run_basic_test"
+            type: "measurement"
+            instrument: "basic_probe"
+            parameters:
+              input: "Hello World"
+              expected_output: "Hello World"
+  
+  substrate:
+    source:
+      type: "synthetic"
+      generator: "echo"
+      parameters:
+        prefix: "echo_"
+  
+  instruments:
+    - type: "basic_probe"
+      id: "basic_probe"
+      provider: "internal"
+      parameters:
+        mode: "echo"
+  
+  execution:
+    concurrency:
+      max_workers: 1
+    retry_policy:
+      max_attempts: 1
+  
+  reporting:
+    artifacts:
+      - type: "console_summary"

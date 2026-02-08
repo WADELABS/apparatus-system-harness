@@ -1,0 +1,197 @@
+# ============================================================================
+# THE APPARATUS: GIT IGNORE FILE
+#
+# We commit only source code, documentation, and manifests.
+# Generated findings, logs, and temporary files are excluded.
+# ============================================================================
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+.mypy_cache/
+.pyre/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================================================
+# APPARATUS-SPECIFIC
+# ============================================================================
+
+# Generated findings (these are data, not code)
+findings/**/*
+!findings/.gitkeep
+!findings/README.md
+
+# Logs (these are runtime artifacts)
+logs/**/*
+!logs/.gitkeep
+
+# Cache (temporary files)
+.cache/
+cache/
+
+# Local configuration
+.apparatusrc.local
+*.local.yaml
+
+# Docker artifacts
+.docker/
+docker-compose.override.yml
+
+# Temporary directories
+tmp/
+temp/
+scratch/
+
+# Large files
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.zip
+*.tar.gz
+
+# Security
+secrets.yaml
+*.pem
+*.key
+*.crt
+
+# ============================================================================
+# EXCEPTIONS (files we DO want to track)
+# ============================================================================
+
+# !manifests/examples/     # Example manifests should be tracked
+# !examples/**/*.md        # Example documentation should be tracked
+# !docs/**/*               # All documentation should be tracked
+
+# ============================================================================
+# PHILOSOPHICAL NOTE:
+# Version control is for preserving knowledge, not data.
+# Code and documentation represent knowledge.
+# Generated findings represent observations.
+# We preserve the means of reproduction (code), not the observations themselves.
+# Observations should be archived separately with proper metadata.
+# ============================================================================
+
+# Project-specific
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# JetBrains IDEs
+.idea/
+
+# VS Code
+.vscode/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582; https://peps.python.org/pep-0582/
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json

@@ -1,0 +1,33 @@
+{{- if .Values.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "inquisitor.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inquisitor.labels" . | nindent 4 }}
+data:
+  inquisitor.yaml: |
+    {{- toYaml .Values.config.inquisitor.yaml | nindent 4 }}
+  {{- if .Values.config.extraConfigs }}
+  {{- range $key, $value := .Values.config.extraConfigs }}
+  {{ $key }}: |
+    {{- toYaml $value | nindent 4 }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.manifests }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "inquisitor.fullname" . }}-manifests
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inquisitor.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.manifests }}
+  {{ $key }}: |
+    {{- toYaml $value | nindent 4 }}
+  {{- end }}
+{{- end }}

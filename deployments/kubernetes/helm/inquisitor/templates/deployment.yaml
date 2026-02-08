@@ -1,0 +1,232 @@
+{{- if .Values.conductor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "inquisitor.fullname" . }}-conductor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inquisitor.labels" . | nindent 4 }}
+    component: conductor
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: {{ .Values.conductor.replicaCount }}
+  strategy:
+    type: {{ .Values.conductor.strategy.type }}
+    rollingUpdate:
+      maxSurge: {{ .Values.conductor.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.conductor.strategy.rollingUpdate.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "inquisitor.selectorLabels" . | nindent 6 }}
+      component: conductor
+  template:
+    metadata:
+      labels:
+        {{- include "inquisitor.selectorLabels" . | nindent 8 }}
+        component: conductor
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.conductor.service.metricsPort }}"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: {{ include "inquisitor.serviceAccountName" . }}
+      {{- include "inquisitor.imagePullSecrets" . | nindent 6 }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: conductor
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["inquisitor"]
+        args:
+        - "conductor"
+        - "--config"
+        - "/etc/inquisitor/config/inquisitor.yaml"
+        - "--log-level"
+        - "{{ .Values.conductor.logLevel }}"
+        ports:
+        - name: http
+          containerPort: {{ .Values.conductor.service.port }}
+          protocol: TCP
+        - name: metrics
+          containerPort: {{ .Values.conductor.service.metricsPort }}
+          protocol: TCP
+        - name: grpc
+          containerPort: {{ .Values.conductor.service.grpcPort }}
+          protocol: TCP
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: INQUISITOR_ENVIRONMENT
+          value: {{ include "inquisitor.environment" . }}
+        - name: DATABASE_URL
+          value: {{ include "inquisitor.databaseUrl" . }}
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "inquisitor.fullname" . }}-postgres
+              key: password
+        - name: REDIS_URL
+          value: {{ include "inquisitor.redisUrl" . }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "inquisitor.fullname" . }}-redis
+              key: password
+        - name: S3_ENDPOINT
+          value: {{ include "inquisitor.s3Endpoint" . }}
+        {{- if .Values.secrets.aws.accessKeyId }}
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "inquisitor.fullname" . }}-aws
+              key: access-key-id
+        {{- end }}
+        {{- if .Values.secrets.aws.secretAccessKey }}
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "inquisitor.fullname" . }}-aws
+              key: secret-access-key
+        {{- end }}
+        {{- range .Values.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.conductor.resources | nindent 10 }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/inquisitor/config
+          readOnly: true
+        - name: manifests-volume
+          mountPath: /etc/inquisitor/manifests
+          readOnly: true
+        - name: shared-storage
+          mountPath: /var/lib/inquisitor
+        - name: tmp-volume
+          mountPath: /tmp
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 1
+        startupProbe:
+          httpGet:
+            path: /startup
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 30
+        securityContext:
+          {{- toYaml .Values.conductor.securityContext | nindent 10 }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ include "inquisitor.fullname" . }}-config
+      - name: manifests-volume
+        configMap:
+          name: {{ include "inquisitor.fullname" . }}-manifests
+      - name: shared-storage
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "inquisitor.fullname" . }}-data
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: tmp-volume
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+      {{- with .Values.conductor.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.conductor.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.conductor.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.conductor.priorityClassName }}
+      priorityClassName: {{ .Values.conductor.priorityClassName }}
+      {{- end }}
+---
+{{- if .Values.hpa.conductor.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "inquisitor.fullname" . }}-conductor-hpa
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inquisitor.labels" . | nindent 4 }}
+    component: conductor
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "inquisitor.fullname" . }}-conductor
+  minReplicas: {{ .Values.hpa.conductor.minReplicas }}
+  maxReplicas: {{ .Values.hpa.conductor.maxReplicas }}
+  metrics:
+    {{- range .Values.hpa.conductor.metrics }}
+    - type: {{ .type }}
+      {{- if .resource }}
+      resource:
+        name: {{ .resource.name }}
+        target:
+          type: {{ .resource.target.type }}
+          averageUtilization: {{ .resource.target.averageUtilization }}
+      {{- end }}
+    {{- end }}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 4
+        periodSeconds: 15
+      selectPolicy: Max
+{{- end }}
+{{- end }}

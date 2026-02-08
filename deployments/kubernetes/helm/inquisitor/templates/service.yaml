@@ -1,0 +1,49 @@
+{{- if .Values.conductor.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "inquisitor.fullname" . }}-conductor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inquisitor.labels" . | nindent 4 }}
+    component: conductor
+spec:
+  type: {{ .Values.conductor.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.conductor.service.port }}
+    targetPort: http
+    protocol: TCP
+  - name: metrics
+    port: {{ .Values.conductor.service.metricsPort }}
+    targetPort: metrics
+    protocol: TCP
+  - name: grpc
+    port: {{ .Values.conductor.service.grpcPort }}
+    targetPort: grpc
+    protocol: TCP
+  selector:
+    {{- include "inquisitor.selectorLabels" . | nindent 4 }}
+    component: conductor
+{{- end }}
+
+{{- if .Values.api.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "inquisitor.fullname" . }}-api
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inquisitor.labels" . | nindent 4 }}
+    component: api
+spec:
+  type: {{ .Values.api.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.api.service.port }}
+    targetPort: http
+    protocol: TCP
+  selector:
+    {{- include "inquisitor.selectorLabels" . | nindent 4 }}
+    component: api
+{{- end }}

@@ -1,0 +1,39 @@
+{{- if .Values.persistence.enabled }}
+{{- if .Values.persistence.data.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "inquisitor.fullname" . }}-data
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inquisitor.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.persistence.data.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.data.size }}
+  {{- if .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.persistence.logs.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "inquisitor.fullname" . }}-logs
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inquisitor.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.persistence.logs.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.logs.size }}
+  {{- if .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+  {{- end }}
+{{- end }}
+{{- end }}

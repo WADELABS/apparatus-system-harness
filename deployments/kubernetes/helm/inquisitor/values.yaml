@@ -1,0 +1,419 @@
+# deployments/kubernetes/helm/inquisitor/values.yaml
+
+# Default values for Inquisitor Framework
+
+# Global configuration
+global:
+  name: inquisitor
+  environment: production
+  domain: inquisitor.example.com
+
+# Image configuration
+image:
+  repository: inquisitor/inquisitor
+  tag: latest
+  pullPolicy: IfNotPresent
+  imagePullSecrets: []
+  # Example for AWS ECR:
+  # imagePullSecrets:
+  #   - name: aws-ecr-credentials
+
+# Conductor configuration
+conductor:
+  enabled: true
+  replicaCount: 2
+  logLevel: info
+  
+  # Strategy for deployment updates
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 8080
+    metricsPort: 9090
+    grpcPort: 50051
+    
+  # Resource requests and limits
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+  
+  # Autoscaling configuration
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+    targetRequestsPerSecond: 100
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+  
+  # Node selector and tolerations
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  
+  # Pod topology spread constraints
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          component: conductor
+  
+  # Priority class
+  priorityClassName: ""
+
+# API server configuration (if enabled)
+api:
+  enabled: true
+  replicaCount: 2
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+# Worker configuration (for background processing)
+worker:
+  enabled: true
+  replicaCount: 3
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
+
+# Scheduler configuration
+scheduler:
+  enabled: true
+  replicaCount: 1
+
+# Artifact registry configuration
+artifactRegistry:
+  enabled: true
+  # Choose storage backend: "filesystem", "s3", "gcs", "azure"
+  storageBackend: "filesystem"
+  
+  # Filesystem storage (for testing/minimal deployments)
+  filesystem:
+    path: "/data/artifacts"
+    size: 100Gi
+    storageClass: "standard"
+    
+  # S3 configuration (for production)
+  s3:
+    bucket: "inquisitor-artifacts"
+    region: "us-east-1"
+    accessKeySecret: "aws-credentials"
+    secretKeySecret: "aws-credentials"
+  
+  # Database configuration
+  database:
+    enabled: true
+    type: "postgresql"
+    host: "postgres.inquisitor.svc.cluster.local"
+    port: 5432
+    database: "inquisitor"
+    username: "inquisitor"
+    passwordSecret: "postgres-password"
+    sslMode: "require"
+    poolSize: 20
+
+# Cache configuration
+cache:
+  enabled: true
+  type: "redis"
+  redis:
+    host: "redis.inquisitor.svc.cluster.local"
+    port: 6379
+    passwordSecret: "redis-password"
+    database: 0
+    poolSize: 10
+
+# Telemetry and monitoring
+telemetry:
+  enabled: true
+  # OpenTelemetry collector endpoint
+  otlpEndpoint: "http://otel-collector:4317"
+  
+  # Prometheus metrics
+  metrics:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+  
+  # Distributed tracing
+  tracing:
+    enabled: true
+    sampler: "parentbased_always_on"
+  
+  # Logging
+  logging:
+    level: "INFO"
+    format: "json"
+    output: "stdout"
+
+# Secrets configuration
+secrets:
+  # Database secrets
+  postgres:
+    username: "inquisitor"
+    password: "change-me-in-production"
+  
+  # Redis secrets
+  redis:
+    password: "change-me-in-production"
+  
+  # AWS credentials (if using S3)
+  aws:
+    accessKeyId: ""
+    secretAccessKey: ""
+  
+  # API keys for external services
+  apiKeys:
+    openai: ""
+    anthropic: ""
+    huggingface: ""
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  hosts:
+    - host: inquisitor.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: inquisitor-api
+              port:
+                number: 8000
+  tls:
+    - secretName: inquisitor-tls
+      hosts:
+        - inquisitor.example.com
+
+# Persistent volumes configuration
+persistence:
+  enabled: true
+  storageClass: "standard"
+  
+  # Data volume for artifacts (if using filesystem)
+  data:
+    enabled: true
+    size: 100Gi
+    accessModes:
+      - ReadWriteOnce
+    
+  # Logs volume
+  logs:
+    enabled: true
+    size: 50Gi
+    accessModes:
+      - ReadWriteOnce
+
+# Service account configuration
+serviceAccount:
+  create: true
+  name: "inquisitor"
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::123456789012:role/inquisitor-role"
+
+# Network policies
+networkPolicy:
+  enabled: true
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              component: inquisitor
+      ports:
+        - port: 8080
+          protocol: TCP
+        - port: 9090
+          protocol: TCP
+
+# Pod security policy (if enabled in cluster)
+podSecurityPolicy:
+  enabled: false
+  name: inquisitor-psp
+
+# Horizontal Pod Autoscaler configuration
+hpa:
+  conductor:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 70
+      - type: Resource
+        resource:
+          name: memory
+          target:
+            type: Utilization
+            averageUtilization: 80
+  
+  api:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 60
+
+# Environment variables
+env:
+  # Core environment
+  - name: INQUISITOR_ENVIRONMENT
+    value: "production"
+  
+  # Debugging
+  - name: DEBUG
+    value: "false"
+  
+  # Logging
+  - name: LOG_LEVEL
+    value: "INFO"
+  
+  # Feature flags
+  - name: ENABLE_TELEMETRY
+    value: "true"
+  - name: ENABLE_CACHING
+    value: "true"
+  
+  # External service timeouts
+  - name: EXTERNAL_API_TIMEOUT
+    value: "30"
+  
+  # Concurrency limits
+  - name: MAX_WORKERS
+    value: "10"
+  - name: MAX_CONCURRENT_ASSAYS
+    value: "5"
+
+# ConfigMaps
+config:
+  # Main application configuration
+  inquisitor.yaml: |
+    # Inquisitor configuration
+    version: 1.0.0
+    environment: production
+    
+    # Artifact registry
+    artifact_registry:
+      type: filesystem
+      base_path: /data/artifacts
+      compression:
+        enabled: true
+        algorithm: gzip
+    
+    # Instrument registry
+    instrument_registry:
+      auto_discovery: true
+      scan_paths:
+        - /instruments
+    
+    # Substrate registry
+    substrate_registry:
+      enabled: true
+    
+    # Execution engine
+    execution:
+      max_concurrent_executions: 5
+      default_timeout_seconds: 3600
+      retry_policy:
+        max_attempts: 3
+        backoff_factor: 2
+    
+    # Telemetry
+    telemetry:
+      enabled: true
+      export_interval_seconds: 30
+      metrics:
+        enabled: true
+        port: 9090
+    
+    # Cache
+    cache:
+      enabled: true
+      backend: redis
+      ttl_seconds: 300
+      max_size_mb: 100
+    
+    # Security
+    security:
+      api_key_required: true
+      rate_limit:
+        enabled: true
+        requests_per_minute: 60
+
+# Additional manifests to include
+manifests:
+  # Sample manifests to load
+  quickstart.yaml: |
+    manifest:
+      version: "1.0.0"
+      id: "quickstart_assay"
+      name: "Quickstart Echo Assay"
+      metadata:
+        author: "Inquisitor System"
+        description: "Quickstart test manifest"
+      substrate:
+        source:
+          type: "test_data"
+          samples: 5
+      instruments:
+        - type: "echo"
+          id: "echo_1"
+          parameters:
+            message: "Welcome to Inquisitor!"
+            repeat: 1
+      analysis:
+        basic:
+          - type: "summary"
+      reporting:
+        artifacts:
+          - type: "executive_summary"
+            format: "markdown"

@@ -1,0 +1,10 @@
+dependencies:
+  - name: postgresql
+    version: 12.1.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: artifactRegistry.database.enabled
+    
+  - name: redis
+    version: 17.0.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: cache.enabled
