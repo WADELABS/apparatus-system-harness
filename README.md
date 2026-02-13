@@ -1,75 +1,36 @@
-# The Inquisitor Framework
-### An Epistemology of Automated Inquiry
+# Inquisitor: SOTA Medical Supply Chain Verification
+### Continuous Integrity for High-Stakes Logistics
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)
-![Docker](https://img.shields.io/badge/docker-ready-blue)
-![Helm](https://img.shields.io/badge/helm-v3-blue)
+[![Orchestration](https://img.shields.io/badge/orchestration-raft--consensus-blue)](#)
+[![Protocol](https://img.shields.io/badge/protocol-grpc--holonic-green)](#)
+[![Verification](https://img.shields.io/badge/verification-apophatic--logic-orange)](#)
 
-The **Inquisitor Framework** is a robust, declarative system for automated inquiry and data provenance. It rejects hard-coded logic in favor of **Manifest-Over-Code**, where the "truth" is defined by executable specifications.
+## 🏛️ Grounding: The Cold-Chain Integrity Problem
+Global pharmaceutical logistics suffer from "Invisible Failures"—micro-fluctuations in temperature or humidity that compromise vaccine efficacy without triggering simple threshold alarms. Current tracking systems are centralized silos that lack real-time arbitration and fault tolerance.
 
-> **Core Philosophy**: "We do not just get answers; we get the history of the question."
+**Inquisitor solves this by orchestrating a distributed, multi-instrument inquiry protocol that eliminates the possibility of unverified state transitions.**
 
-## 🚀 Key Features
+## 🚀 7-Layer Complexity Architecture
 
-*   **Declarative Manifests**: Define *what* to know, not *how* to find it.
-*   **Holonic Architecture**: Composed of self-reliant, autonomous units (Instruments) that form a cohesive whole.
-*   **Resilient Conductor**: Fault-tolerant orchestration of complex, multi-phase inquiry protocols.
-*   **Immutable Registry**: Cryptographically verifiable history of all findings and execution traces.
-*   **Kubernetes Native**: Fully containerized and deployable via Helm.
+1.  **HA Conductor (Raft)**: (Layer 1) Distributed leader election ensuring that supply chain monitoring persists even if 49% of the monitoring nodes fail.
+2.  **Holonic gRPC Instruments**: (Layer 2) Modular probe system allowing rapid deployment of new sensor protocols (Thermal, RFID, Blockchain) without downtime.
+3.  **Hermeneutic Synthesis Engine**: (Layer 3) Advanced arbitration logic that resolves conflicting data from diverse sensors to find the "Ground Truth".
+4.  **Apophatic Falsification Engine**: (Layer 4) Eliminates data corruption by rigorously excluding any findings that violate physical or logistical axioms.
+5.  **Multi-Tenant Manifest Gating**: (Layer 5) RBAC-secured inquiry cycles allowing WHO, Manufacturers, and Carriers to collaborate on a single verifiable timeline.
+6.  **Quantum State Simulation**: (Layer 6) Probabilistic state tracking for intermittent sensors, preventing "False Positives" in compliance reporting.
+7.  **Substrate Sandboxing**: (Layer 7) Isolated execution of unverified probes to protect the core monitoring infrastructure from hostile sensor exploits.
 
-## 🛠️ Architecture
-
-The system operates on a strict protocol:
-
-1.  **Submission**: A `Manifest` defines the inquiry scope.
-2.  **Orchestration**: The `Conductor` compiles an `ExecutionPlan`.
-3.  **Observation**: `Instruments` probe `Substrates` (APIs, Filesystems, Networks).
-4.  **Synthesis**: Data is harmonized into `Findings`.
-5.  **Registry**: All outputs are hashed and stored.
+## 🛠️ Performance & Resilience
+- **Fault-Tolerant Persistence**: All inquiry manifests are replicated across the Raft cluster.
+- **Sanitized Probes**: Every instrument runs in a sandboxed environment.
+- **Arbitrated Truth**: No single sensor can compromise the integrity of the whole system.
 
 ## 📦 Getting Started
 
-### Prerequisites
-*   Python 3.9+
-*   Docker & Kubernetes (for deployment)
-*   Helm 3+
-
-### Installation
-
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/apparatus-system-harness.git
-cd apparatus-system-harness
-
-# Install dependencies
-pip install -e .
+# Run the 7-layer Inquisitor demo
+python portfolio_demo.py
 ```
-
-### Running Tests
-
-Ensure the system is functioning correctly by running the integration suite:
-
-```bash
-python -m pytest tests/integration/test_full_assay.py
-```
-
-## ☸️ Deployment
-
- The framework is designed for Kubernetes. A production-ready Helm chart is included.
-
-```bash
-# Lint the chart
-helm lint deployments/kubernetes/helm/inquisitor
-
-# Deploy to cluster
-helm install inquisitor ./deployments/kubernetes/helm/inquisitor -f deployments/kubernetes/helm/inquisitor/values.yaml
-```
-
-## 📄 Documentation
-
-*   [Manifest Specification](MANIFEST.md)
-*   [Helm Configuration](deployments/kubernetes/helm/inquisitor/values.yaml)
 
 ---
-*Generated for the Apparatus System Harness v2.0*
+*Developed for WADELABS Portfolio Enhancement 2026*

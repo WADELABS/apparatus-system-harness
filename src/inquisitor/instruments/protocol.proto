@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package inquisitor;
+
+// Layer 2: Dynamic Holonic Instruments (gRPC Protocol)
+service Instrument {
+  // Execute a probe on a specific market feed (e.g. NYSE, CBOE)
+  rpc Probe (ProbeRequest) returns (ProbeResponse);
+  
+  // Health check for the instrument
+  rpc Health (HealthRequest) returns (HealthResponse);
+}
+
+message ProbeRequest {
+  string inquiry_id = 1;
+  string market_feed_source = 2; // Exchange API, WebSocket, or FIX Gateway
+  map<string, string> parameters = 3;
+}
+
+message ProbeResponse {
+  string raw_data = 1;
+  float confidence_score = 2;
+  string timestamp = 3;
+  string integrity_hash = 4;
+}
+
+message HealthRequest {}
+message HealthResponse {
+  bool alive = 1;
+  float load_factor = 2;
+}
