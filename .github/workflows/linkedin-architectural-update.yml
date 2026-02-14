@@ -1,0 +1,17 @@
+name: LinkedIn Architectural Update
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.yaml'
+      - 'README.md'
+
+jobs:
+  draft-post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate High-Fidelity Update
+        run: |
+          echo "Wadelabs Production Update: Manifest-Over-Code logic pushed to Apparatus."
+          echo "Focus: Strengthening Immutable Audit Trails in K8s-Native Inquiry Systems."
+          # Integration point: In the future, this can curl to a Make.com/n8n webhook
