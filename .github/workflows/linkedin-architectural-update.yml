@@ -7,11 +7,27 @@ on:
       - 'README.md'
 
 jobs:
-  draft-post:
+  dispatch-to-linkedin:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate High-Fidelity Update
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Generate High-Fidelity Update Payload
+        id: payload
         run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
           echo "Wadelabs Production Update: Manifest-Over-Code logic pushed to Apparatus."
           echo "Focus: Strengthening Immutable Audit Trails in K8s-Native Inquiry Systems."
-          # Integration point: In the future, this can curl to a Make.com/n8n webhook
+          
+          # Construct JSON payload for n8n
+          echo "payload={\"project\": \"apparatus\", \"topic\": \"Platform Engineering\", \"commit_msg\": \"$COMMIT_MSG\", \"philosophy\": \"Manifest-Over-Code\"}" >> $GITHUB_OUTPUT
+
+      - name: Send Webhook to n8n
+        run: |
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '${{ steps.payload.outputs.payload }}'
+        continue-on-error: true # Prevents build failure if n8n is down
