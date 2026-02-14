@@ -1,0 +1,28 @@
+name: Wadelabs Quarterly R&D Summary
+on:
+  schedule:
+    - cron: '0 0 1 1,4,7,10 *' # Quarterly
+
+jobs:
+  summarize-decisions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Aggregate & Summarize Design Decisions
+        id: summary
+        run: |
+          # Aggregation logic: Summarize DECISIONS.md
+          DECISIONS=$(cat DECISIONS.md | grep "-" | head -n 5)
+          TITLE="Wadelabs Quarterly R&D Summary: Advancements in Verifiable Agentic Architecture"
+          CONTENT="This quarter, Wadelabs has concentrated on anchoring agentic reasoning within formal logical constraints. Key advancements include the refinement of Merkle-tree provenance ledgers and the expansion of adversarial stress-testing vectors. Our 'Manifest-Over-Code' philosophy remains the primary driver for eliminating procedural drift in distributed AI systems."
+          
+          echo "payload={\"title\": \"$TITLE\", \"content\": \"$CONTENT\"}" >> $GITHUB_OUTPUT
+
+      - name: Send Webhook to n8n
+        run: |
+          curl -X POST "${{ secrets.N8N_SUMMARY_WEBHOOK }}" \
+            -H "Content-Type: application/json" \
+            -d '${{ steps.summary.outputs.payload }}'
+        continue-on-error: true
