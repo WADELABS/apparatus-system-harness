@@ -1,6 +1,17 @@
 # Apparatus System Harness: Kubernetes-Native Inquiry Systems
 ### Infrastructure as Code for Immutable Provenance
 
+```mermaid
+graph LR
+    A[YAML Manifest] --> B[Inquisitor Controller]
+    B --> C{Raft Consensus}
+    C --> D[Instrument A]
+    C --> E[Instrument B]
+    D --> F[Hermeneutic Synthesis]
+    E --> F
+    F --> G[Verified State Ledger]
+```
+
 [![Orchestration](https://img.shields.io/badge/orchestration-raft--consensus-blue)](#)
 [![IaC](https://img.shields.io/badge/iac-manifest--over--code-green)](#)
 [![Verification](https://img.shields.io/badge/verification-apophatic--logic-orange)](#)
@@ -59,6 +70,9 @@ spec:
 # Run the 7-layer Inquisitor demo
 python portfolio_demo.py
 ```
+
+## ⚖️ Governance & Alignment
+Apparatus enforces a "Zero-Shadow-State" policy, preventing any system transitions that are not explicitly defined in a version-controlled manifest. All distributed audit logs are anonymized at the substrate level to ensure data privacy while maintaining cryptographic integrity.
 
 ---
 *Developed for WADELABS Cloud Architecture Research 2026*
