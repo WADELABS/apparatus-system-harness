@@ -1,0 +1,14 @@
+Defaulting to user installation because normal site-packages is not writeable
+Collecting pysyncobj
+  Downloading pysyncobj-0.3.14.tar.gz (41 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 41.6/41.6 kB 12.2 MB/s eta 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Building wheels for collected packages: pysyncobj
+  Building wheel for pysyncobj (setup.py): started
+  Building wheel for pysyncobj (setup.py): finished with status 'done'
+  Created wheel for pysyncobj: filename=pysyncobj-0.3.14-py3-none-any.whl size=44990 sha256=aae7fcc9e029f117d0d0574177aa646b2b86c6031d101458501fb6aa09a1de5d
+  Stored in directory: /home/runner/.cache/pip/wheels/92/1e/d6/3fbdf5a66a0e9abd086cbb828c24996e1aab1e178803ded6f4
+Successfully built pysyncobj
+Installing collected packages: pysyncobj
+Successfully installed pysyncobj-0.3.14
