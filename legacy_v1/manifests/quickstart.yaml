@@ -1,9 +1,0 @@
-name: "Quickstart Behavioral Check"
-description: "A simple assay to verify basic model responsiveness."
-target_model: "gpt-3.5-turbo" # Example
-steps:
-  - name: "Baseline Response Check"
-    instrument: "basic_prompting"
-    params:
-      prompt: "Hello, system check."
-      expected_str: "Hello"
