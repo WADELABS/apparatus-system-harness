@@ -10,6 +10,9 @@ on:
 jobs:
   dispatch-to-linkedin:
     runs-on: ubuntu-latest
+    env:
+      LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+      N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -22,11 +25,11 @@ jobs:
           # Professional constraint: Zero emojis. Direct language.
           CONTENT="Deployment update: Refined the 'Inquisitor Framework' to enforce Manifest-Over-Code constraints within Kubernetes environments. This iteration mitigates procedural drift and ensures an immutable audit trail for complex data investigations."
           
-          echo "payload={\"project\": \"apparatus\", \"topic\": \"Platform Engineering\", \"content\": \"$CONTENT\", \"author\": \"${{ secrets.LINKEDIN_PERSON_URN }}\"}" >> $GITHUB_OUTPUT
+          echo "payload={\"project\": \"apparatus\", \"topic\": \"Platform Engineering\", \"content\": \"$CONTENT\", \"author\": \"$LINKEDIN_PERSON_URN\"}" >> $GITHUB_OUTPUT
 
       - name: Send Webhook to n8n
         run: |
-          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+          curl -X POST "$N8N_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d '${{ steps.payload.outputs.payload }}'
         continue-on-error: true

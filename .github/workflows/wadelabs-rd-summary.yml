@@ -6,6 +6,8 @@ on:
 jobs:
   summarize-decisions:
     runs-on: ubuntu-latest
+    env:
+      N8N_SUMMARY_WEBHOOK: ${{ secrets.N8N_SUMMARY_WEBHOOK }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -22,7 +24,7 @@ jobs:
 
       - name: Send Webhook to n8n
         run: |
-          curl -X POST "${{ secrets.N8N_SUMMARY_WEBHOOK }}" \
+          curl -X POST "$N8N_SUMMARY_WEBHOOK" \
             -H "Content-Type: application/json" \
             -d '${{ steps.summary.outputs.payload }}'
         continue-on-error: true
