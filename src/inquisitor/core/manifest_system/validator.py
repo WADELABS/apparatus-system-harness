@@ -5,7 +5,6 @@ Validates manifest structure, types, and semantic constraints.
 
 from typing import List, Dict, Any, Optional, Literal
 from pydantic import BaseModel, Field, field_validator, model_validator
-from enum import Enum
 
 
 class ManifestMetadata(BaseModel):
@@ -34,7 +33,7 @@ class ProtocolPhase(BaseModel):
 class ProtocolSpec(BaseModel):
     """Protocol specification defining execution flow."""
     type: str = Field(..., description="Protocol type (e.g., 'sequential', 'parallel', 'dag')")
-    phases: List[str] = Field(..., description="List of phase names in execution order")
+    phases: List[Any] = Field(..., description="List of phase names or phase objects in execution order")
     
     @field_validator('type')
     @classmethod
@@ -42,6 +41,27 @@ class ProtocolSpec(BaseModel):
         valid_types = {'sequential', 'parallel', 'dag', 'hybrid'}
         if v not in valid_types:
             raise ValueError(f"Invalid protocol type: {v}. Must be one of {valid_types}")
+        return v
+    
+    @field_validator('phases')
+    @classmethod
+    def validate_phases(cls, v: List[Any]) -> List[Any]:
+        """Accept both list of strings and list of phase objects."""
+        if not v:
+            raise ValueError("At least one phase must be defined")
+        
+        # Validate each phase
+        for phase in v:
+            if isinstance(phase, str):
+                # Simple string phase name - OK
+                continue
+            elif isinstance(phase, dict):
+                # Phase object - must have 'name'
+                if 'name' not in phase:
+                    raise ValueError("Phase object must have 'name' field")
+            else:
+                raise ValueError(f"Phase must be string or dict, got {type(phase)}")
+        
         return v
 
 
