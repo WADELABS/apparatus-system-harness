@@ -1,4 +1,21 @@
-# Case File: Apparatus System Harness (ASH) ⚙️
+# Case File:# Apparatus System Harness (ASH): Substrate Command & Control ⚙️
+
+> **"If the substrate is the mind, ASH is the CNS. It doesn't just orchestrate; it enforces. When the Scientific Method forms a hypothesis and Negative Space identifies a void, ASH is the 'Fixer' that steps in to execute the inquiry and ensure the audit trail is immutable."**
+
+The **Apparatus System Harness (ASH)** is the high-fidelity **Command & Control Substrate** of the Wadelabs ecosystem. It acts as the "Enforcer" of the Scientific Method, ensuring that every actuation is backed by a verified forensic audit.
+
+## 🏛️ THE FIXER'S REIGN: Substrate Orchestration
+ASH operates on a **Manifest-Over-Code** philosophy. It treats connected devices and logical systems not as black boxes, but as layers to be triaged and resolved.
+
+### 🧠 The Core Directive
+1.  **Orchestration**: Tying the 6 pillars into a single **Cognitive Stack**.
+2.  **Enforcement**: Ensuring that no command is executed unless the **Truth Substrate** (SMF, Crucible, Negative Space) returns a veracity signal.
+3.  **Triage**: Implementing the **Triple-Threat Trace** (Apparatus → System → Harness) to isolate failures at the correct layer.
+
+## ⚙️ Engineering Principles
+-   **Substrate Command & Control**: Absolute sovereignty over system state.
+-   **Immutable Audit Trails**: Every inquiry is logged, signed, and verified.
+-   **Graceful Degradation**: If a pillar fails, ASH ensures the stack shifts to a safe-mode state rather than crashing.
 
 > **"My roommate's smart home kept doing dumb things. The lights would turn on at 3 AM for no reason. The thermostat set itself to 85 degrees in July. The coffee maker started brewing at random times, which was great when it happened before work and terrible when it happened at midnight.**
 >
