@@ -1,49 +1,32 @@
-"""
-src/orchestrator.py
-Deterministic Orchestration: Tying the Wadelabs suite together.
-"""
-
-from typing import Dict, Any
+from typing import Dict, Any, List
+from .triage import TriageEngine
 
 class Orchestrator:
     """
-    Coordinates the three-pillar Truth Substrate.
+    Coordinates the three-pillar Truth Substrate via deterministic triage.
     """
     def __init__(self):
-        self.pillars = ["SCIENTIFIC_METHOD", "THE_CRUCIBLE", "NEGATIVE_SPACE"]
+        self.triage = TriageEngine()
 
-    def process_instruction(self, instruction: str) -> Dict[str, Any]:
+    def run_diagnostic_trace(self, incident: str, telemetry: Dict[str, bool]) -> Dict[str, Any]:
         """
-        Runs an instruction through the honesty audit before execution.
+        Enforces a high-fidelity diagnostic trace (Apparatus -> System -> Harness).
         """
-        # Step 1: Mapping the Void (Negative Space)
-        gaps = self._check_negative_space(instruction)
+        incident_id = self.triage.log_incident(incident)
         
-        # Step 2: Verification (The Crucible)
-        forensics = self._check_crucible(instruction)
-        
-        # Step 3: Hypothesis Testing (SMF)
-        validity = self._check_smf(instruction)
-        
-        can_execute = (gaps["uncertainty"] < 0.5 and 
-                      forensics["status"] == "VERIFIED" and 
-                      validity["salience"] > 0.7)
+        # Sequentially verify layers
+        result = self.triage.run_trace(incident_id, telemetry)
         
         return {
-            "instruction": instruction,
-            "can_execute": can_execute,
-            "audit_trail": {
-                "negative_space": gaps,
-                "crucible": forensics,
-                "smf": validity
-            }
+            "incident_id": incident_id,
+            "trace_result": result,
+            "can_actuate": result["status"] == "CLEARED"
         }
 
-    def _check_negative_space(self, instruction: str) -> Dict:
-        return {"uncertainty": 0.2, "status": "MAPPED"} # Mock
-
-    def _check_crucible(self, instruction: str) -> Dict:
-        return {"status": "VERIFIED", "markers": []} # Mock
-
-    def _check_smf(self, instruction: str) -> Dict:
-        return {"salience": 0.85, "grounding": "GROUNDED"} # Mock
+    def process_instruction(self, instruction: str) -> Dict[str, Any]:
+        """Legacy support for instruction processing."""
+        return {
+            "instruction": instruction,
+            "status": "DEPRECATED",
+            "message": "Use run_diagnostic_trace for forensic triage."
+        }

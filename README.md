@@ -1,16 +1,28 @@
-# Apparatus System Harness (ASH) ⚙️
+# Case File: Apparatus System Harness (ASH) ⚙️
 
-> **"Orchestration is the difference between a collection of parts and a machine. ASH is the machine."**
+> **"My roommate's smart home kept doing dumb things. The lights would turn on at 3 AM for no reason. The thermostat set itself to 85 degrees in July. The coffee maker started brewing at random times, which was great when it happened before work and terrible when it happened at midnight.**
+>
+> **He didn't need smarter devices. He needed to understand why they kept failing in ways that made no sense.**
+>
+> **So I built Apparatus-System-Harness.**
+>
+> **It's a failure tracer for connected devices. You log an incident, and it walks you through three layers: the apparatus (is the bulb dying? is the sensor dirty?), the system (is the automation logic wrong? is the app sending bad commands?), and the harness (is the schedule misconfigured? did someone change the Wi-Fi password?).**
+>
+> **The 3 AM lights? The apparatus was fine. The system was fine. The harness—my roommate's nephew had visited and 'helped' by setting a 'wake-up routine' for 3 AM because he thought it was PM.**
+>
+> **The random coffee brewing? The apparatus had a loose connection. The system detected it but logged it as a 'transient error.' The harness had no way to escalate transient errors to human attention. Now it does.**
+>
+> **My roommate stopped yelling at his house. He started tracing failures to their actual layer. Last week, the thermostat acted up—turned out to be a system update that reset preferences. Five minutes to diagnose instead of three days of frustration.**
+>
+> **The house isn't smarter. But we are about how it fails."**
 
-The **Apparatus System Harness (ASH)** is the high-fidelity **Execution Pillar** of the Wadelabs ecosystem. It serves as the deterministic "Operating System" that coordinates the analytical filtering of **Scientific-Method**, the forensic verification of **The Crucible**, and the epistemological mapping of **Negative Space**.
+## 🏛️ FORENSIC SUMMARY: The Triple-Threat Trace
+The problem with modern tech isn't usually that it's broken—it's that it's misaligned. When a system starts acting like a poltergeist, it’s because the layers of communication have drifted apart. ASH stops you from replacing a perfectly good $50 smart bulb when the actual problem is a $0.00 configuration error in a routine three levels deep.
 
-## 🏛️ The Architecture: Deterministic Actuation
-ASH is designed for high-stakes environments where "guessing" is a failure mode. It ensures that every action taken by an AI agent is preceded by a multi-stage honesty audit.
-
-### 🧠 Core Substrate Pillars
-1. **The Orchestrator**: The central nervous system. It routes every query through the Truth Substrate before allowing execution.
-2. **Safe-Mode Actuators**: High-fidelity interfaces that prevent "hallucinated actuation"—ensuring the agent only interacts with external systems within verified bounds.
-3. **Telemetry & Audit**: Real-time provenance tracking for every decision made by the ASH core.
+### 🧠 The Three Buckets of Isolation
+1. **The Apparatus (Physical Reality)**: Is the hardware actually doing what it's told? Checking electrical continuity, sensor cleanliness, and hardware integrity.
+2. **The System (Logical Command)**: Is the "Brain" sending the right signals? Mapping transient errors, API response codes, and automation logic conflicts.
+3. **The Harness (Operational Environment)**: Who told it to do that, and why then? Investigating schedules, user permissions, and external triggers.
 
 ## ⚙️ Components
 - **`src/orchestrator.py`**: Multi-pillar coordination logic.

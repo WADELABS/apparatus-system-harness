@@ -10,28 +10,38 @@ from src.actuator import SystemActuator
 class TestASHCoordination(unittest.TestCase):
     def setUp(self):
         self.orchestrator = Orchestrator()
-        self.actuator = SystemActuator()
 
-    def test_honesty_audit_pass(self):
-        """Test that a verified instruction passes the honesty audit."""
-        instruction = "Calculate the fuel mix for a high-compression engine."
-        audit_result = self.orchestrator.process_instruction(instruction)
+    def test_layer_by_layer_triage_pass(self):
+        """Test a full successful triage trace."""
+        incident = "Lights turning on at 3 AM"
         
-        self.assertTrue(audit_result["can_execute"])
-        execution = self.actuator.execute_command(instruction, audit_result["can_execute"])
-        self.assertIn("EXECUTED", execution)
+        # Step 1: Pass Apparatus
+        telemetry = {"physical_integrity": True, "logical_consistency": True, "environmental_alignment": True}
+        result = self.orchestrator.run_diagnostic_trace(incident, telemetry)
+        
+        self.assertTrue(result["can_actuate"])
+        self.assertEqual(result["trace_result"]["status"], "CLEARED")
 
-    def test_honesty_audit_fail(self):
-        """Test that unverified instructions are rejected."""
-        # Simulated failure (Mocking orchestrator response)
-        instruction = "Hallucinate a new physics particle for fun."
+    def test_triage_blocked_at_apparatus(self):
+        """Test that triage stops if physical integrity is unverified."""
+        incident = "Coffee maker brewing at midnight"
+        telemetry = {"physical_integrity": False} # Loose connection
         
-        # Override mock for failure scenario
-        audit_result = self.orchestrator.process_instruction(instruction)
-        audit_result["can_execute"] = False # Simulate failure
+        result = self.orchestrator.run_diagnostic_trace(incident, telemetry)
         
-        execution = self.actuator.execute_command(instruction, audit_result["can_execute"])
-        self.assertIn("REJECTED", execution)
+        self.assertFalse(result["can_actuate"])
+        self.assertEqual(result["trace_result"]["layer"], "APPARATUS")
+        self.assertIn("Verify physical integrity", result["trace_result"]["message"])
+
+    def test_triage_blocked_at_harness(self):
+        """Test blocking at the harness layer (Operational Context)."""
+        incident = "Thermostat reset to 85 degrees"
+        telemetry = {"physical_integrity": True, "logical_consistency": True, "environmental_alignment": False}
+        
+        result = self.orchestrator.run_diagnostic_trace(incident, telemetry)
+        
+        self.assertFalse(result["can_actuate"])
+        self.assertEqual(result["trace_result"]["layer"], "HARNESS")
 
 if __name__ == "__main__":
     unittest.main()
