@@ -9,10 +9,10 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
 
 # Internal Imports
-from src.inquisitor.conductor.raft_node import InquisitorConductor
-from src.inquisitor.synthesis.arbitrator import HermeneuticSynthesizer, ApophaticVerifier
-from src.inquisitor.gated_access.rbac import InquiryGating, QuantumStateSimulation
-from src.inquisitor.registry.sandboxing import SubstrateSandboxing
+from inquisitor.conductor.raft_node import InquisitorConductor
+from inquisitor.synthesis.arbitrator import HermeneuticSynthesizer, ApophaticVerifier
+from inquisitor.gated_access.rbac import InquiryGating, QuantumStateSimulation
+from inquisitor.registry.sandboxing import SubstrateSandboxing
 
 async def run_inquisitor_demo():
     """
