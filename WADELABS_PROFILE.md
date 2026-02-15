@@ -32,7 +32,10 @@ Our substrate is built on six inter-dependent repositories that coordinate throu
 
 ---
 
-## 🛠️ Unified Installation
+## 🛠️ Unified Installation & Licensing
 Every repository in the WADELABS suite features a standardized `requirements.txt` or `package.json` for rapid, high-fidelity deployment.
+
+### ⚖️ Legal & Licensing
+All WADELABS substrate components are released under the **MIT License**. We believe in the sovereignty of code and the open pursuit of empirical truth.
 
 > **"Precision Thought. Zero Hallucination. WADELABS."**
