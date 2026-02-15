@@ -1,5 +1,5 @@
 from typing import Dict, Any, List
-from .triage import TriageEngine
+from src.triage import TriageEngine
 
 class Orchestrator:
     """
