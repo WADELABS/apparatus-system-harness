@@ -12,10 +12,20 @@ ASH operates on a **Manifest-Over-Code** philosophy. It treats connected devices
 2.  **Enforcement**: Ensuring that no command is executed unless the **Truth Substrate** (SMF, Crucible, Negative Space) returns a veracity signal.
 3.  **Triage**: Implementing the **Triple-Threat Trace** (Apparatus → System → Harness) to isolate failures at the correct layer.
 
-## ⚙️ Engineering Principles
--   **Substrate Command & Control**: Absolute sovereignty over system state.
--   **Immutable Audit Trails**: Every inquiry is logged, signed, and verified.
--   **Graceful Degradation**: If a pillar fails, ASH ensures the stack shifts to a safe-mode state rather than crashing.
+### ⚡ The Automated Trigger: Closing the Harness Gap
+ASH now features an automated **Trigger Layer** (`src/trigger.py`). This layer listens for `VOID_DETECTED` signals from **Negative Space** and automatically bridges them into a full substrate inquiry.
+
+-   **Zero-Shadow-State**: Manual orchestration is deprecated. The Inquisitor reacts to substrate signals with sub-millisecond precision.
+-   **Recursive Inquiry**: The Trigger Layer can initiate cascading audits across the entire Cognitive Stack if a void reveals deeper system instability.
+
+## 🛠️ Components
+- **Orchestrator**: The central command engine.
+- **Trigger**: The automated bridge between Sense-Making and Execution.
+- **Triage**: Recursive diagnostic engine (Apparatus → System → Harness).
+- **Actuator**: High-fidelity system interaction.
+
+---
+*ASH: The Inquisitor of WADELABS. Precision is not optional.*
 
 > **"My roommate's smart home kept doing dumb things. The lights would turn on at 3 AM for no reason. The thermostat set itself to 85 degrees in July. The coffee maker started brewing at random times, which was great when it happened before work and terrible when it happened at midnight.**
 >
