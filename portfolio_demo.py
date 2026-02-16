@@ -1,3 +1,24 @@
+#!/usr/bin/env python3
+"""
+Portfolio Demo - Advanced 7-Layer System Demonstration
+========================================================
+
+**NOTE**: This is an advanced demo showing all 7 layers working together.
+If you're new to Apparatus System Harness, start with the simpler demo:
+    python examples/hello-world/demo.py
+
+This demo showcases:
+- Layer 1: Raft consensus for high availability
+- Layer 2: Holonic gRPC instruments
+- Layer 3: Hermeneutic synthesis (multi-source arbitration)
+- Layer 4: Apophatic falsification (via negativa logic)
+- Layer 5: Multi-tenant RBAC gating
+- Layer 6: Quantum state simulation
+- Layer 7: Substrate sandboxing
+
+For a simpler introduction, see: examples/hello-world/
+"""
+
 import asyncio
 import logging
 import uuid
