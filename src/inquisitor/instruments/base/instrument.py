@@ -120,10 +120,10 @@ class AbstractInstrument(ABC):
         instrument_type = getattr(cls, 'INSTRUMENT_TYPE', cls.__name__)
         cls._registry[instrument_type] = cls
     
-    def __init__(self, config: InstrumentConfig, telemetry: TelemetryCollector):
+    def __init__(self, config: InstrumentConfig, telemetry: TelemetryCollector, provenance: Optional['ProvenanceRecorder'] = None):
         self.config = config
         self.telemetry = telemetry
-        self.provenance = ProvenanceRecorder()
+        self.provenance = provenance
         
         # State management
         self._state: InstrumentState = InstrumentState.UNINITIALIZED

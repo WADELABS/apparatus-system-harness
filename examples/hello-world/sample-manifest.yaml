@@ -1,0 +1,57 @@
+manifest:
+  version: "1.0.0"
+  id: "hello_world_demo"
+  name: "Hello World Inquiry"
+  
+  metadata:
+    author: "Apparatus Demo"
+    description: "A simple hello-world inquiry demonstrating the core workflow"
+    created: "2026-02-16T00:00:00Z"
+    tags: ["demo", "hello-world", "quickstart"]
+  
+  protocol:
+    type: "sequential"
+    phases:
+      - name: "initialization"
+        steps:
+          - name: "greeting"
+            type: "diagnostic"
+            instrument: "echo_probe"
+            parameters:
+              message: "Initializing..."
+      
+      - name: "execution"
+        steps:
+          - name: "hello_world"
+            type: "measurement"
+            instrument: "echo_probe"
+            parameters:
+              message: "Hello, World!"
+              greeting: "Welcome to Apparatus System Harness"
+  
+  substrate:
+    source:
+      type: "synthetic"
+      generator: "echo"
+      parameters:
+        prefix: "demo_"
+        count: 1
+  
+  instruments:
+    - type: "echo"
+      id: "echo_probe"
+      provider: "internal"
+      parameters:
+        response_delay_ms: 10
+        mode: "echo"
+  
+  execution:
+    concurrency:
+      max_workers: 1
+    retry_policy:
+      max_attempts: 1
+  
+  reporting:
+    artifacts:
+      - type: "console_summary"
+        format: "markdown"

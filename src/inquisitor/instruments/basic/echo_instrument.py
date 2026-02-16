@@ -7,14 +7,14 @@ A basic instrument that echoes input parameters. Used for testing and calibratio
 
 from typing import Dict, Any
 import asyncio
-from ...base.instrument import AbstractInstrument, InstrumentConfig
+from ..base.instrument import AbstractInstrument, InstrumentConfig
 
 class EchoInstrument(AbstractInstrument):
     """
     Basic instrument that echoes inputs.
     """
     
-    async def _parse_parameters(self, raw_parameters: Dict[str, Any]) -> Dict[str, Any]:
+    def _parse_parameters(self, raw_parameters: Dict[str, Any]) -> Dict[str, Any]:
         """Validate parameters."""
         return raw_parameters
     
@@ -28,7 +28,7 @@ class EchoInstrument(AbstractInstrument):
     
     async def _perform_calibration(self, data: Dict[str, Any]):
         """No calibration needed."""
-        from ...base.instrument import CalibrationResult
+        from ..base.instrument import CalibrationResult
         return CalibrationResult(success=True, metrics={}, artifacts={})
 
     def _validate_calibration(self, result) -> bool:
