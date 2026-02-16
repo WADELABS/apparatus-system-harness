@@ -1,0 +1,514 @@
+{
+  "$defs": {
+    "AnalysisSpec": {
+      "description": "Analysis specification.",
+      "properties": {
+        "statistical": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/StatisticalTest"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Statistical tests to perform",
+          "title": "Statistical"
+        },
+        "visualizations": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Visualizations to generate",
+          "title": "Visualizations"
+        }
+      },
+      "title": "AnalysisSpec",
+      "type": "object"
+    },
+    "ArtifactConfig": {
+      "description": "Artifact generation configuration.",
+      "properties": {
+        "type": {
+          "description": "Artifact type (e.g., 'executive_summary', 'detailed_report')",
+          "title": "Type",
+          "type": "string"
+        },
+        "format": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "markdown",
+          "description": "Output format",
+          "title": "Format"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "description": "Artifact-specific parameters",
+          "title": "Parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "ArtifactConfig",
+      "type": "object"
+    },
+    "ConcurrencyConfig": {
+      "description": "Concurrency configuration.",
+      "properties": {
+        "max_workers": {
+          "default": 1,
+          "description": "Maximum concurrent workers",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Max Workers",
+          "type": "integer"
+        }
+      },
+      "title": "ConcurrencyConfig",
+      "type": "object"
+    },
+    "ExecutionSpec": {
+      "description": "Execution configuration.",
+      "properties": {
+        "concurrency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConcurrencyConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Concurrency settings"
+        },
+        "retry_policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RetryPolicy"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Retry policy"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Overall execution timeout in seconds",
+          "title": "Timeout"
+        }
+      },
+      "title": "ExecutionSpec",
+      "type": "object"
+    },
+    "InstrumentSpec": {
+      "description": "Instrument configuration specification.",
+      "properties": {
+        "type": {
+          "description": "Instrument type",
+          "title": "Type",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique instrument identifier",
+          "title": "Id",
+          "type": "string"
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "internal",
+          "description": "Instrument provider",
+          "title": "Provider"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "description": "Instrument-specific parameters",
+          "title": "Parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "id"
+      ],
+      "title": "InstrumentSpec",
+      "type": "object"
+    },
+    "ManifestMetadata": {
+      "description": "Metadata about the manifest author and creation.",
+      "properties": {
+        "author": {
+          "description": "Author of the manifest",
+          "title": "Author",
+          "type": "string"
+        },
+        "created": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ISO 8601 creation timestamp",
+          "title": "Created"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Manifest description",
+          "title": "Description"
+        },
+        "tags": {
+          "description": "Tags for categorization",
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "author"
+      ],
+      "title": "ManifestMetadata",
+      "type": "object"
+    },
+    "ProtocolSpec": {
+      "description": "Protocol specification defining execution flow.",
+      "properties": {
+        "type": {
+          "description": "Protocol type (e.g., 'sequential', 'parallel', 'dag')",
+          "title": "Type",
+          "type": "string"
+        },
+        "phases": {
+          "description": "List of phase names or phase objects in execution order",
+          "items": {},
+          "title": "Phases",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "phases"
+      ],
+      "title": "ProtocolSpec",
+      "type": "object"
+    },
+    "ReportingSpec": {
+      "description": "Reporting specification.",
+      "properties": {
+        "artifacts": {
+          "description": "Artifacts to generate",
+          "items": {
+            "$ref": "#/$defs/ArtifactConfig"
+          },
+          "title": "Artifacts",
+          "type": "array"
+        },
+        "destinations": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Output destinations",
+          "title": "Destinations"
+        }
+      },
+      "title": "ReportingSpec",
+      "type": "object"
+    },
+    "RetryPolicy": {
+      "description": "Retry policy configuration.",
+      "properties": {
+        "max_attempts": {
+          "default": 1,
+          "description": "Maximum retry attempts",
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "backoff_factor": {
+          "anyOf": [
+            {
+              "maximum": 10.0,
+              "minimum": 0.1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1.0,
+          "description": "Exponential backoff factor",
+          "title": "Backoff Factor"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Timeout per attempt in seconds",
+          "title": "Timeout"
+        }
+      },
+      "title": "RetryPolicy",
+      "type": "object"
+    },
+    "StatisticalTest": {
+      "description": "Statistical test configuration.",
+      "properties": {
+        "test": {
+          "description": "Test type (e.g., 'mean_comparison', 't_test', 'anova')",
+          "title": "Test",
+          "type": "string"
+        },
+        "groups": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Groups to compare",
+          "title": "Groups"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "description": "Test-specific parameters",
+          "title": "Parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "test"
+      ],
+      "title": "StatisticalTest",
+      "type": "object"
+    },
+    "SubstrateSource": {
+      "description": "Source configuration for substrate data.",
+      "properties": {
+        "type": {
+          "description": "Source type (e.g., 'synthetic', 'file', 'api')",
+          "title": "Type",
+          "type": "string"
+        },
+        "generator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Generator name for synthetic sources",
+          "title": "Generator"
+        },
+        "path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Path for file-based sources",
+          "title": "Path"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "URL for API-based sources",
+          "title": "Url"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "description": "Source-specific parameters",
+          "title": "Parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "SubstrateSource",
+      "type": "object"
+    },
+    "SubstrateSpec": {
+      "description": "Substrate specification for data sources.",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/SubstrateSource",
+          "description": "Source configuration"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "title": "SubstrateSpec",
+      "type": "object"
+    }
+  },
+  "description": "JSON Schema for Apparatus System Harness Inquiry Manifests. This schema defines the canonical interface for declaring distributed inquiries.",
+  "properties": {
+    "version": {
+      "description": "Manifest schema version",
+      "title": "Version",
+      "type": "string"
+    },
+    "id": {
+      "description": "Unique manifest identifier",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "description": "Human-readable manifest name",
+      "title": "Name",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ManifestMetadata",
+      "description": "Manifest metadata"
+    },
+    "protocol": {
+      "$ref": "#/$defs/ProtocolSpec",
+      "description": "Protocol specification"
+    },
+    "substrate": {
+      "$ref": "#/$defs/SubstrateSpec",
+      "description": "Substrate specification"
+    },
+    "instruments": {
+      "description": "Instrument configurations",
+      "items": {
+        "$ref": "#/$defs/InstrumentSpec"
+      },
+      "title": "Instruments",
+      "type": "array"
+    },
+    "execution": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExecutionSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Execution configuration"
+    },
+    "analysis": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AnalysisSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Analysis specification"
+    },
+    "reporting": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReportingSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Reporting specification"
+    }
+  },
+  "required": [
+    "version",
+    "id",
+    "name",
+    "metadata",
+    "protocol",
+    "substrate",
+    "instruments"
+  ],
+  "title": "Apparatus Inquiry Manifest",
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0"
+}
